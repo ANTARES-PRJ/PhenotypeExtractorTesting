@@ -86,7 +86,10 @@ The following operations are specific to datasets structured like this.
 - **`addingparentstodataset.py`**: Adds parent codes to their children in the ordered dataset and stores the result in a new column.
 
 ### Association
-- **`csvcreator_finale.py`**: Matches the codes from the CTWEdge combination with the reports in your dataset.
+- **`csvcreator_finale.py`**: Matches the codes from the CTWEdge combination with all the corresponding reports in your dataset.
+- **`find_best_match.py`**:Matches the code from the CTWEdge combination with the best corresponding report in your dataset.
+- **`from_ctw_to_acts.py`**translate from ctw to acts specifically for ctw hpo
+
 
 ## Input & Outputs
 
@@ -109,6 +112,7 @@ The following operations are specific to datasets structured like this.
 | **codectwformatting.py** |code.csv| formatted_code.csv|
 | **addingparentstodataset.py** | ordered_dataset.csv completehpohierarchy.csv| ordered_dataset_withparents.csv|
 | **csvcreator_finale.py** | formatted_codes.csv ordered_dataset_withparents.csv| output_data_matches output_data_no_matches output_data_exact_matches|
+| **find_best_match.py** | formatted_codes.csv ordered_dataset_withparents.csv completehpohierarchy.csv| output_data_matches output_data_no_matches output_data_exact_matches|
 
 
 ## Contributing
