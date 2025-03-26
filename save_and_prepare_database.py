@@ -2,12 +2,209 @@ import os
 from pathlib import Path
 import pandas as pd
 from deep_translator import GoogleTranslator
+import random
+import re
+from names import male_names_list, female_names_list, hospital_physicians, surname_list, escape_sentences
 
 res_dataset = "merged_dataset.csv"
 dataset_1 = "synthetic_clinical_cases.csv"
 dataset_1_translated = "synthetic_clinical_cases_translated.csv"
 dataset_2 = "clinical_case_symptoms_diseases_dataset.csv"
 output_folder = "."
+
+def change_patient_name(text):
+    """
+    Modifies the patient name and adds hospital and physician information to the given text.
+    This function identifies and replaces the patient name in the provided text with a randomly 
+    generated name based on gender-related keywords or existing patient names. If no patient 
+    name is found, it adds a new patient name. Additionally, it prepends the text with randomly 
+    selected hospital and physician information.
+    Args:
+        text (str): The input text containing patient information.
+    Returns:
+        str: The modified text with updated patient name, hospital, and physician details.
+    Notes:
+        - The function uses predefined lists `female_names_list`, `male_names_list`, and 
+          `surname_list` for generating random names.
+        - The `hospital_physicians` dictionary is used to select random hospital and physician 
+          information.
+        - If the input is not a string, it is returned unchanged.
+    """
+    if isinstance(text, str):
+        if "Patient" in text:
+            start_pos = text.find("Patient:") + len("Patient:")
+            end_pos = text.find("\n", start_pos)
+            if end_pos == -1:
+                end_pos = len(text)
+            existing_patient = text[start_pos:end_pos].strip()
+
+            if existing_patient in ["Ana García", "Ana García Pérez", "Ana García López"]:
+                new_patient = f"{random.choice(female_names_list)} {random.choice(surname_list)}"
+            elif existing_patient == "Juan Pérez":
+                new_patient = f"{random.choice(male_names_list)} {random.choice(surname_list)}"
+            else:
+                if any(keyword in text.lower() for keyword in ["female", "woman", "ova", "ovarian", "vagina"]):
+                    new_patient = f"{random.choice(female_names_list)} {random.choice(surname_list)}"
+                elif any(keyword in text.lower() for keyword in ["male", "testicular", "scrotus", "penis"]):
+                    new_patient = f"{random.choice(male_names_list)} {random.choice(surname_list)}"
+                else:
+                    new_patient = f"{random.choice(male_names_list)} {random.choice(surname_list)}"
+
+            text = text[:start_pos] + " " + new_patient + text[end_pos:]
+        else:
+            if any(keyword in text.lower() for keyword in ["female", "woman", "ova", "ovarian", "vagina"]):
+                new_patient = f"{random.choice(female_names_list)} {random.choice(surname_list)}"
+            else:
+                new_patient = f"{random.choice(male_names_list)} {random.choice(surname_list)}"
+
+            text = f"Patient: {new_patient}\n" + text
+
+        random_hospital = random.choice(list(hospital_physicians.keys()))
+        random_physician = random.choice(hospital_physicians[random_hospital])
+        text = f"Hospital: {random_hospital}\nDoctor: {random_physician}\n" + text
+
+        return text
+    
+    return text
+
+def clean_header(text, start_marker="Reason for consultation", alternative_marker="Medical History", end_marker="Signature", end_marker2="Dr.", sex_marker=["SexMale", "SexFemale"]):
+    """
+    Cleans and extracts relevant content from a medical text header.
+    This function processes a given text by removing unwanted sections based on 
+    specified markers and extracts patient and specialty information if available.
+    Args:
+        text (str): The input text to be cleaned and processed.
+        start_marker (str, optional): The primary marker indicating the start of the 
+            relevant content. Defaults to "Reason for consultation".
+        alternative_marker (str, optional): An alternative marker indicating the start 
+            of the relevant content. Defaults to "Medical History".
+        end_marker (str, optional): The marker indicating the end of the relevant content. 
+            Defaults to "Signature".
+        end_marker2 (str, optional): An additional marker indicating the end of the relevant 
+            content. Defaults to "Dr.".
+        sex_marker (list, optional): A list of markers used to identify and remove sex-related 
+            information from the text. Defaults to ["SexMale", "SexFemale"].
+    Returns:
+        str: The cleaned text with the extracted header information (specialty and patient name, 
+        if available) followed by the relevant content.
+    """
+    patient_name = None
+    specialty = None
+    lines = text.splitlines()
+
+    for line in lines:
+        line = line.strip()
+        if line.startswith("Patient:"):
+            patient_name = line.replace("Patient:", "").strip()
+        if "Specialist" in line:
+            specialty = line.strip()
+            break
+
+    if start_marker in text:
+        text = text.split(start_marker, 1)[-1]
+    elif alternative_marker in text:
+        text = text.split(alternative_marker, 1)[-1]
+
+    for marker in sex_marker:
+        if marker in text:
+            text = text.split(marker, 1)[-1].strip()
+            break
+
+    if end_marker in text:
+        text = text.split(end_marker, 1)[0]
+    if end_marker2 in text:
+        text = text.split(end_marker2, 1)[0]
+
+    header = ""
+    if specialty:
+        header += f"{specialty}\n"
+    if patient_name:
+        header += f"Patient: {patient_name}\n"
+    
+    return header + text.strip()
+
+def clean_hpo_ids(valore):
+    """
+    Cleans a given HPO (Human Phenotype Ontology) ID string by removing square brackets,
+    single quotes, and leading/trailing whitespace.
+
+    Args:
+        valore (str): The input value to be cleaned. If not a string, the value is returned as-is.
+
+    Returns:
+        str: The cleaned HPO ID string if the input is a string.
+        Any: The original value if the input is not a string.
+    """
+    if isinstance(valore, str):
+        return valore.replace("[", "").replace("]", "").replace("'", "").strip()
+    return valore
+
+def clean_sentences(text, sentences):
+    """
+    Removes specified sentences from the given text and returns the cleaned text.
+
+    Args:
+        text (str): The input text from which sentences will be removed.
+        sentences (list of str): A list of sentences to be removed from the text.
+
+    Returns:
+        str: The cleaned text with specified sentences removed and leading/trailing whitespace stripped.
+             If the input `text` is not a string, it is returned unchanged.
+    """
+    if isinstance(text, str):
+        for sentence in sentences:
+            text = text.replace(sentence, "")
+        return text.strip()
+    return text
+
+def customize_dataset(output_folder, dataset_file):
+    """
+    Customizes a dataset by cleaning and modifying its content, then saves the updated dataset.
+    Args:
+        output_folder (str): The name of the folder where the customized dataset will be saved.
+        dataset_file (str): The name of the dataset file to be processed.
+    Functionality:
+        - Creates the output folder if it does not exist.
+        - Reads the dataset file from the specified output folder.
+        - Cleans the "Document" column by removing headers and modifying patient names.
+        - Cleans the "HPO_IDs" column by removing invalid entries and formatting the content.
+        - Removes sentences from the "Document" column based on specific criteria.
+        - Saves the customized dataset back to the output folder.
+    Raises:
+        FileNotFoundError: If the input dataset file does not exist.
+        KeyError: If required columns ("Document", "HPO_IDs") are missing in the dataset.
+        Exception: For any other issues encountered during processing.
+    Returns:
+        None
+    """
+    # Get the folders
+    base_dir = os.path.dirname(os.path.realpath(__file__))
+    output_dir = os.path.join(base_dir, output_folder)
+    os.makedirs(output_dir, exist_ok=True)
+
+    # Get dataset file
+    input_file = os.path.join(output_dir, dataset_file)
+    output_file1 = os.path.join(output_dir, dataset_file)
+    df = pd.read_csv(input_file)
+
+    # Clean the header in medical reports and HPO_IDs column
+    df["Document"] = df["Document"].apply(clean_header)
+    df['HPO_IDs'] = df['HPO_IDs'].apply(clean_hpo_ids)
+    df = df[df['HPO_IDs'].str.strip().astype(bool)]
+    df['HPO_IDs'] = df['HPO_IDs'].str.replace(r"(?<!\,)\s+(?!\,)", r",", regex=True)
+    df = df[df['Document'].str.strip().astype(bool)]   
+
+    # Modify patient name
+    df['Document'] = df['Document'].apply(lambda x: change_patient_name(x))
+    
+    # Remove sentences
+    df['Document'] = df['Document'].apply(lambda x: clean_sentences(x, escape_sentences))
+    df['Document'] = df['Document'].str.replace(":", "", regex=False)
+
+    # Salvataggio file
+    df.to_csv(output_file1, index=False)
+    print("Customized dataset saved successfully")
+
 
 def save_database(folder):
     """

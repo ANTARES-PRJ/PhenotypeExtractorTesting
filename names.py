@@ -29,3 +29,15 @@ surnames = "Rossi, Russo, Ferrari, Esposito, Bianchi, Romano, Colombo, Ricci, Ma
 male_names_list = male_names.split(", ")
 female_names_list = female_names.split(", ")
 surname_list = surnames.split(", ")
+
+# Sentences to be removed
+escape_sentences = [
+    "Physical examination:", "Diagnostic impression:", "Central University Hospital",
+    "Dr. Ana López, ", "Dr. Javier López, ", "Dr. Ana López", "Dr. Javier López", "López",
+    "Signature", "Signed", "Treatment:", "Background:", "Patient background",
+    "Diagnosis", "Medical history", "Clinical findings", "Reason for Consultation",
+    "Personal History", "Physical Examination", "Diagnostic Impression",
+    "García Pérez", "Juan Perez", "Juan Pérez,", "Juan Pérez", "Ana García López",
+    "Mr. Juan Pérez", "Juan's", "Name Juan Pérez", "San Juan University Hospital",
+    "Diagnostic plan", "Juan", "Garcia's ", "Garcia", "Pérez", "Ana García", "Dr. Martínez"
+]

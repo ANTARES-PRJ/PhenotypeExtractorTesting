@@ -28,14 +28,9 @@ pip install deep_translator
 ### Dataset Preparation
 Users who don't need to translate or merge datasets can skip this section.
 
-- **`save_and_prepare_database.py`**: Saves the dataset needed for further operations. Then, it translates a specific dataset (translates 10 rows to English per cycle), and merges the two datasets into a single file.
+- **`save_and_prepare_database.py`**: Saves the dataset needed for further operations. Then, it translates a specific dataset (translates 10 rows to English per cycle), and merges the two datasets into a single file. It also customizes the dataset by adding different names for patients, physicians, and hospitals.
 
-After running this program, you will have a single dataset named `merged_dataset`.
-
-### Dataset Customization
-If you already have the desired dataset, skip this section.
-
-- **`dataset_customization.py`**: Customizes the dataset and generates two results: one ordered and one unordered.
+After running this program, you will have a single dataset named `merged_dataset.,csv`.
 
 ### HPO Hierarchy
 - **`completehierarchy.py`**: Organizes the HPO hierarchy into a CSV file.
