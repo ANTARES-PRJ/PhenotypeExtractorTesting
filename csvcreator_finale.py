@@ -7,7 +7,6 @@ def extract_reports_to_csv(codici_file, dataset_file, output_directory):
     
     # Definizione dei file di output
     output_file_matches = os.path.join(output_directory, "report_matches.csv")
-    output_file_exact_matches = os.path.join(output_directory, "report_exact_matches.csv")
 
     # Caricamento dei file in DataFrame
     df_codici = pd.read_csv(codici_file, header=None, dtype=str).fillna('')  # Codici input

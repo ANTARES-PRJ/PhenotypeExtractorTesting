@@ -72,7 +72,6 @@ The functionalities of `save_and_prepare_database.py` exploits the file `names.p
 | **save_and_prepare_database.py** | | merged_dataset.csv | 
 | **completehierarchy.py** | hp.obo| completehpohierarchy.csv| 
 | **completehierarchy_from118.py** | hp.obo| completehpohierarchy_from118.csv|
-| **truedepthcalc.py** | completehpohierarchy.csv| true_depth.csv|
 | **depthfrom118.py** | completehpohierarchy.csv| true_depth_from118.csv|
 | **zeroremoval.py.py** | true_depth_from118.csv <br>completehpohierarchy_from118.csv | true_depth_from118_cleaned.csv <br>completehpohierarchy_from118_cleaned.csv|
 | **createctwedgenozero.py** | true_depth_from118_cleaned.csv completehpohierarchy_from118_cleaned.csv| test.ctw|

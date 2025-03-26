@@ -130,7 +130,7 @@ def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     output_dir = os.path.join(script_dir, "output")
     os.makedirs(output_dir, exist_ok=True)
-    codici_file = os.path.join(output_dir, "formatted_codes.csv")
+    codici_file = os.path.join(output_dir, "HPO-t2-formatted.csv")
     dataset_file = os.path.join(output_dir, "ordered_dataset_withparents.csv")
     hierarchy_file = os.path.join(output_dir, "completehpohierarchy.csv")
     extract_reports_to_csv(codici_file, dataset_file, hierarchy_file, output_dir)
