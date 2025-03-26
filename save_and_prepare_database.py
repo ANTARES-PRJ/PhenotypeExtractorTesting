@@ -3,6 +3,12 @@ from pathlib import Path
 import pandas as pd
 from deep_translator import GoogleTranslator
 
+res_dataset = "merged_dataset.csv"
+dataset_1 = "synthetic_clinical_cases.csv"
+dataset_1_translated = "synthetic_clinical_cases_translated.csv"
+dataset_2 = "clinical_case_symptoms_diseases_dataset.csv"
+output_folder = "."
+
 def save_database(folder):
     """
     Saves specified datasets from remote sources to a local folder in CSV format.
@@ -191,15 +197,18 @@ def merge_datasets(folder, db1_file_name, db2_file_name, output_file_name):
 
 if __name__ == "__main__":
     # First, save the databases
-    save_database(".")
+    save_database(output_folder)
+    
     # Then, translate the database
-    translate_database(".", "synthetic_clinical_cases.csv", "synthetic_clinical_cases_translated.csv")
+    translate_database(output_folder, dataset_1, dataset_1_translated)
+    
     # Lastly, merge the datasets
-    merge_datasets(".", "synthetic_clinical_cases_translated.csv", "clinical_case_symptoms_diseases_dataset.csv", "merged_dataset.csv")
+    merge_datasets(output_folder, dataset_1_translated, dataset_2, res_dataset)
+    
     # Remove files created during the process
-    os.remove("synthetic_clinical_cases.csv")
-    os.remove("synthetic_clinical_cases_translated.csv")
-    os.remove("clinical_case_symptoms_diseases_dataset.csv")
+    os.remove(dataset_1)
+    os.remove(dataset_1_translated)
+    os.remove(dataset_2)
     print("Files cleaned successfully")
 
 

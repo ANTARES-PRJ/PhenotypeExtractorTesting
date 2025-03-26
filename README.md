@@ -25,7 +25,7 @@ pip install deep_translator
 - The folder contains Python scripts that process and analyze data.
 - The input and output CSV files are located in the `output` folder.
 
-### Save and Translate
+### Dataset Preparation
 Users who don't need to translate or merge datasets can skip this section.
 
 - **`save_and_prepare_database.py`**: Saves the dataset needed for further operations. Then, it translates a specific dataset (translates 10 rows to English per cycle), and merges the two datasets into a single file.
@@ -67,9 +67,7 @@ If you already have the desired dataset, skip this section.
 | Script name   | Inputs | Outputs   |
 |-----------|-----------|-----------|
 | **save_and_prepare_database.py** | | merged_dataset.csv | 
-| **dataset_customization.py** | starting_dataset.csv| ordered_dataset.csv <br>notordered_dataset.csv | 
-| **countstartinghpo.py** | ordered_dataset.csv| hpo_counts.csv | 
-| **CountExtension.py** | hpo_counts.csv hp.obo| output_hierarchy.csv | 
+| **dataset_customization.py** | merged_dataset.csv| ordered_dataset.csv  |
 | **completehierarchy.py** | hp.obo| completehpohierarchy.csv| 
 | **completehierarchy_from118.py** | hp.obo| completehpohierarchy_from118.csv|
 | **truedepthcalc.py** | completehpohierarchy.csv| true_depth.csv|

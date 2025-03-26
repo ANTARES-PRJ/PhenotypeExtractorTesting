@@ -1,7 +1,5 @@
-# ospedalimedici.py
-# Liste di medici e ospedali con associazione uno a cinque
-
-ospedali_medici = {
+# Dictionary of hospital names and physicians
+hospital_physicians = {
     "Holy Cross Hospital": ["Paolo Vitale", "Elena Marini", "Francesco De Angelis", "Giulia Neri", "Matteo Conti"],
     "Saint Michael Clinic": ["Laura Ferri", "Andrea Rinaldi", "Sofia Conti", "Luca Bianchi", "Valeria Russo"],
     "Saint Bartholomew Hospital": ["Giovanni Puglisi", "Chiara Romano", "Marco Fontana", "Federica Esposito", "Vincenzo Costa"],
@@ -24,11 +22,10 @@ ospedali_medici = {
     "Sun Queen Hospital": ["Chiara Puglisi", "Stefano Mancini", "Salvatore Marchi", "Elena Colombo", "Marco Vitale"],
 }
 
-# Stringhe con 50 nomi e 50 cognomi italiani
-nomi_maschili_stringa = "Marco, Luca, Giovanni, Matteo, Francesco, Antonio, Alessandro, Stefano, Roberto, Giuseppe, Mario, Andrea, Davide, Fabio, Giorgio, Federico, Carlo, Luigi, Paolo, Riccardo, Vincenzo, Simone, Daniele, Nicola, Massimo, Enrico, Lorenzo, Claudio, Cristian, Giulio, Michele, Angelo, Salvatore, Pietro, Emanuele, Filippo, Gabriele, Alessio, Tommaso, Walter, Diego, Gianluca, Edoardo, Saverio, Cesare, Silvio, Dario, Giuliano, Tiziano, Armando"
-nomi_femminili_stringa = "Giulia, Martina, Elisa, Francesca, Carla, Valeria, Silvia, Chiara, Federica, Elena, Anna, Alessandra, Caterina, Roberta, Ilaria, Laura, Loredana, Beatrice, Paola, Stefania, Rosa, Alessia, Gabriella, Maria, Teresa, Claudia, Serena, Arianna, Sabrina, Monica, Barbara, Daniela, Lucia, Tiziana, Antonella, Simona, Emma, Federica, Vittoria, Miriam, Margherita, Paola, Giulia, Camilla, Teresa, Marta"
-cognomi_stringa = "Rossi, Russo, Ferrari, Esposito, Bianchi, Romano, Colombo, Ricci, Marino, Greco, Bruno, Gallo, Conti, De Luca, Costa, Giordano, Mancini, Rizzo, Lombardi, Moretti, Barbieri, Fontana, Santoro, Mariani, Rinaldi, Caruso, Ferrara, Gatti, Pugliese, Orlando, Amato, Leone, Sorrentino, Martinelli, Benedetti, Messina, Guerra, Palmieri, Longo, Serra, Farina, Parisi, Marchetti, Valentini, Pagano, Monti, Vitali, De Angelis, Fabbri, Pellegrini"
-
-nomi_maschili_lista = nomi_maschili_stringa.split(", ")
-nomi_femminili_lista = nomi_femminili_stringa.split(", ")
-cognomi_lista = cognomi_stringa.split(", ")
+# Names and surnames
+male_names = "Marco, Luca, Giovanni, Matteo, Francesco, Antonio, Alessandro, Stefano, Roberto, Giuseppe, Mario, Andrea, Davide, Fabio, Giorgio, Federico, Carlo, Luigi, Paolo, Riccardo, Vincenzo, Simone, Daniele, Nicola, Massimo, Enrico, Lorenzo, Claudio, Cristian, Giulio, Michele, Angelo, Salvatore, Pietro, Emanuele, Filippo, Gabriele, Alessio, Tommaso, Walter, Diego, Gianluca, Edoardo, Saverio, Cesare, Silvio, Dario, Giuliano, Tiziano, Armando"
+female_names = "Giulia, Martina, Elisa, Francesca, Carla, Valeria, Silvia, Chiara, Federica, Elena, Anna, Alessandra, Caterina, Roberta, Ilaria, Laura, Loredana, Beatrice, Paola, Stefania, Rosa, Alessia, Gabriella, Maria, Teresa, Claudia, Serena, Arianna, Sabrina, Monica, Barbara, Daniela, Lucia, Tiziana, Antonella, Simona, Emma, Federica, Vittoria, Miriam, Margherita, Paola, Giulia, Camilla, Teresa, Marta"
+surnames = "Rossi, Russo, Ferrari, Esposito, Bianchi, Romano, Colombo, Ricci, Marino, Greco, Bruno, Gallo, Conti, De Luca, Costa, Giordano, Mancini, Rizzo, Lombardi, Moretti, Barbieri, Fontana, Santoro, Mariani, Rinaldi, Caruso, Ferrara, Gatti, Pugliese, Orlando, Amato, Leone, Sorrentino, Martinelli, Benedetti, Messina, Guerra, Palmieri, Longo, Serra, Farina, Parisi, Marchetti, Valentini, Pagano, Monti, Vitali, De Angelis, Fabbri, Pellegrini"
+male_names_list = male_names.split(", ")
+female_names_list = female_names.split(", ")
+surname_list = surnames.split(", ")

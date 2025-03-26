@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import random
 import re
-from NomiCreator import ospedali_medici, nomi_maschili_lista, nomi_femminili_lista, cognomi_lista
+from names import male_names_list, female_names_list, hospital_physicians, surname_list
 
 # Ottieni la cartella dello script
 base_dir = os.path.dirname(os.path.realpath(__file__))
@@ -14,7 +14,6 @@ os.makedirs(output_dir, exist_ok=True)
 # Percorsi dei file
 input_file = os.path.join(output_dir, "merged_dataset.csv")
 output_file1 = os.path.join(output_dir, "ordered_dataset.csv")
-output_file2 = os.path.join(output_dir, "notordered_dataset.csv")
 
 
 # Carica il DataFrame
@@ -81,23 +80,23 @@ def sostituisci_nome_paziente(testo, lista_nomi_maschili, lista_nomi_femminili, 
             nome_paziente_esistente = testo[start_pos:end_pos].strip()
 
             if nome_paziente_esistente in ["Ana García", "Ana García Pérez", "Ana García López"]:
-                nome_paziente_nuovo = f"{random.choice(lista_nomi_femminili)} {random.choice(cognomi_lista)}"
+                nome_paziente_nuovo = f"{random.choice(lista_nomi_femminili)} {random.choice(surname_list)}"
             elif nome_paziente_esistente == "Juan Pérez":
-                nome_paziente_nuovo = f"{random.choice(lista_nomi_maschili)} {random.choice(cognomi_lista)}"
+                nome_paziente_nuovo = f"{random.choice(lista_nomi_maschili)} {random.choice(surname_list)}"
             else:
                 if any(keyword in testo.lower() for keyword in ["female", "woman", "ova", "ovarian", "vagina"]):
-                    nome_paziente_nuovo = f"{random.choice(lista_nomi_femminili)} {random.choice(cognomi_lista)}"
+                    nome_paziente_nuovo = f"{random.choice(lista_nomi_femminili)} {random.choice(surname_list)}"
                 elif any(keyword in testo.lower() for keyword in ["male", "testicular", "scrotus", "penis"]):
-                    nome_paziente_nuovo = f"{random.choice(lista_nomi_maschili)} {random.choice(cognomi_lista)}"
+                    nome_paziente_nuovo = f"{random.choice(lista_nomi_maschili)} {random.choice(surname_list)}"
                 else:
-                    nome_paziente_nuovo = f"{random.choice(lista_nomi_maschili)} {random.choice(cognomi_lista)}"
+                    nome_paziente_nuovo = f"{random.choice(lista_nomi_maschili)} {random.choice(surname_list)}"
 
             testo = testo[:start_pos] + " " + nome_paziente_nuovo + testo[end_pos:]
         else:
             if any(keyword in testo.lower() for keyword in ["female", "woman", "ova", "ovarian", "vagina"]):
-                nome_paziente_nuovo = f"{random.choice(lista_nomi_femminili)} {random.choice(cognomi_lista)}"
+                nome_paziente_nuovo = f"{random.choice(lista_nomi_femminili)} {random.choice(surname_list)}"
             else:
-                nome_paziente_nuovo = f"{random.choice(lista_nomi_maschili)} {random.choice(cognomi_lista)}"
+                nome_paziente_nuovo = f"{random.choice(lista_nomi_maschili)} {random.choice(surname_list)}"
 
             testo = f"Patient: {nome_paziente_nuovo}\n" + testo
 
@@ -109,7 +108,7 @@ def sostituisci_nome_paziente(testo, lista_nomi_maschili, lista_nomi_femminili, 
     return testo
 
 df['Documento'] = df['Documento'].apply(
-    lambda x: sostituisci_nome_paziente(x, nomi_maschili_lista, nomi_femminili_lista, ospedali_medici)
+    lambda x: sostituisci_nome_paziente(x, male_names_list, female_names_list, hospital_physicians)
 )
 
 # Generalizzazione dei report rimuovendo identificatori 
@@ -137,10 +136,6 @@ df['Documento'] = df['Documento'].str.replace(":", "", regex=False)
 
 # Salvataggio file
 df.to_csv(output_file1, index=False)
-
-# Randomizzazione delle righe e salvataggio finale
-df = df.sample(frac=1).reset_index(drop=True)
-df.to_csv(output_file2, index=False)
 
 
 print("Dataset modificato e reso anonimo con nomi inventati")
