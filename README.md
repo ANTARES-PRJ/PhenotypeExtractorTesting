@@ -10,22 +10,13 @@ Before running the scripts, install the following dependencies:
 For the Majority of programs operating with csv:
 ```bash
 pip install pandas
-
 ```
 For translation:
 ```bash
 pip install deep_translator
 ```
 
-For graphics generation:
-```bash
-pip install matplotlib
-pip install obonet
-```
-
-`hp.opo` is also required.
-
-https://hpo.jax.org/data/ontology
+`hp.obo` is also required. You can download it from the following link: [https://hpo.jax.org/data/ontology](https://hpo.jax.org/data/ontology)
 
 ## Usage
 
