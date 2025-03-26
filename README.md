@@ -33,6 +33,13 @@ Users who don't need to translate or merge datasets can skip this section.
 After running this program, you will have a single dataset named `merged_dataset.,csv`.
 The functionalities of `save_and_prepare_database.py` exploits the file `names.py` which contains the names of patients, physicians, and hospitals.
 
+
+
+
+
+
+
+
 ### HPO Hierarchy
 - **`completehierarchy.py`**: Organizes the HPO hierarchy into a CSV file.
 - **`completehierarchy_from118.py`**: Organizes the HPO hierarchy with a maximum parent code of `HP:0000118` into a CSV file.
