@@ -28,7 +28,7 @@ pip install deep_translator
 ### Save and Translate
 Users who don't need to translate or merge datasets can skip this section.
 
-- **`savedatabase.py`**: Saves the dataset needed for further operations. Then, it translates a specific dataset (translates 10 rows to English per cycle), and merges the two datasets into a single file.
+- **`save_and_prepare_database.py`**: Saves the dataset needed for further operations. Then, it translates a specific dataset (translates 10 rows to English per cycle), and merges the two datasets into a single file.
 
 After running this program, you will have a single dataset named `merged_dataset`.
 
@@ -66,9 +66,7 @@ If you already have the desired dataset, skip this section.
 
 | Script name   | Inputs | Outputs   |
 |-----------|-----------|-----------|
-| **savedatabase.py** | | dataset1.csv <br> dataset2.csv | 
-| **translate10x.py** | dataset1.csv| dataset1_translated.csv | 
-| **mergedataset.py** | dataset1_translated.csv <br> dataset2.csv| starting_dataset | 
+| **save_and_prepare_database.py** | | merged_dataset.csv | 
 | **dataset_customization.py** | starting_dataset.csv| ordered_dataset.csv <br>notordered_dataset.csv | 
 | **countstartinghpo.py** | ordered_dataset.csv| hpo_counts.csv | 
 | **CountExtension.py** | hpo_counts.csv hp.obo| output_hierarchy.csv | 
