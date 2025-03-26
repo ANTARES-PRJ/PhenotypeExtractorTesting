@@ -196,6 +196,11 @@ if __name__ == "__main__":
     translate_database(".", "synthetic_clinical_cases.csv", "synthetic_clinical_cases_translated.csv")
     # Lastly, merge the datasets
     merge_datasets(".", "synthetic_clinical_cases_translated.csv", "clinical_case_symptoms_diseases_dataset.csv", "merged_dataset.csv")
+    # Remove files created during the process
+    os.remove("synthetic_clinical_cases.csv")
+    os.remove("synthetic_clinical_cases_translated.csv")
+    os.remove("clinical_case_symptoms_diseases_dataset.csv")
+    print("Files cleaned successfully")
 
 
 

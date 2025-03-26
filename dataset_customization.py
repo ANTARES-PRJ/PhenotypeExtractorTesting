@@ -12,7 +12,7 @@ output_dir = os.path.join(base_dir, "output")
 os.makedirs(output_dir, exist_ok=True)
 
 # Percorsi dei file
-input_file = os.path.join(output_dir, "starting_dataset.csv")
+input_file = os.path.join(output_dir, "merged_dataset.csv")
 output_file1 = os.path.join(output_dir, "ordered_dataset.csv")
 output_file2 = os.path.join(output_dir, "notordered_dataset.csv")
 
