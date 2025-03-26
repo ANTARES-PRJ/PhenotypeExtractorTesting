@@ -7,7 +7,6 @@ def extract_reports_to_csv(codici_file, dataset_file, output_directory):
     
     # Definizione dei file di output
     output_file_matches = os.path.join(output_directory, "report_matches.csv")
-    output_file_no_matches = os.path.join(output_directory, "report_no_matches.csv")
     output_file_exact_matches = os.path.join(output_directory, "report_exact_matches.csv")
 
     # Caricamento dei file in DataFrame
@@ -64,7 +63,6 @@ def extract_reports_to_csv(codici_file, dataset_file, output_directory):
 
     # Creazione DataFrame e salvataggio file
     pd.DataFrame(output_data_matches, columns=["Codici Input", "Codici Originali", "Codici Originali+Padri", "Report"]).to_csv(output_file_matches, index=False, encoding='utf-8')
-    pd.DataFrame(output_data_no_matches, columns=["Codici Input", "Codici Originali", "Codici Originali+Padri", "Report"]).to_csv(output_file_no_matches, index=False, encoding='utf-8')
     pd.DataFrame(output_data_exact_matches, columns=["Codici Input", "Codici Originali", "Codici Originali+Padri", "Report"]).to_csv(output_file_exact_matches, index=False, encoding='utf-8')
 
     print(f"Estrazione completata! I file CSV sono stati salvati nella cartella: {output_directory}")
