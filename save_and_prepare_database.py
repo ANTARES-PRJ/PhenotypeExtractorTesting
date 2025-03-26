@@ -4,7 +4,7 @@ import pandas as pd
 from deep_translator import GoogleTranslator
 import random
 import re
-from names import male_names_list, female_names_list, hospital_physicians, surname_list, escape_sentences
+from utils.names import male_names_list, female_names_list, hospital_physicians, surname_list, escape_sentences
 
 res_dataset = "merged_dataset.csv"
 dataset_1 = "synthetic_clinical_cases.csv"

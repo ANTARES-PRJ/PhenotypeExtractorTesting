@@ -6,7 +6,6 @@ from itertools import combinations
 output_folder = "."
 
 
-
 def clean_hpo_code(hpo_code):
     """
     Cleans and normalizes an HPO (Human Phenotype Ontology) code.
@@ -91,19 +90,6 @@ def extract_phenotypes_from_ctwedge(filename):
                 phenotypes.extend([v for v in values if v != "NULL"])
     return sorted(set(phenotypes))
 
-def count_phenotype1_hpo_codes(filename):
-    """ Conta quanti codici HPO sono presenti in phenotype1. """
-    with open(filename, "r", encoding="utf-8") as file:
-        for line in file:
-            if line.startswith("\tphenotype1: {"):
-                match = re.match(r"\tphenotype1: \{(.+?)\}", line)
-                if match:
-                    codes = match.group(1).split(", ")
-                    hpo_count = len([c for c in codes if c != "NULL"])
-                    print(f"Numero di codici HPO in phenotype1: {hpo_count}")
-                    return hpo_count
-    return 0
-
 def write_ctwedge_constraints(filename, hierarchy_path, num_phenotypes):
     """ Aggiunge i vincoli al file CTWedge basandosi sui codici HPO estratti, considerando anche le superclassi. """
     hierarchy_map = parse_hierarchy_csv(hierarchy_path)
@@ -146,21 +132,6 @@ def write_ctwedge_constraints(filename, hierarchy_path, num_phenotypes):
     print(f"Vincoli aggiunti nel file '{filename}'")
 
 
-def count_phenotype1_constraints(ctwedge_file):
-    """ Conta quante righe nel file CTWedge iniziano con '# phenotype1'. """
-    count = 0
-    try:
-        with open(ctwedge_file, 'r', encoding='utf-8') as file:
-            for line in file:
-                if line.strip().startswith("# phenotype1"):
-                    count += 1
-        print(f"Il numero di righe che iniziano con '# phenotype1' è: {count}")
-        return count
-    except Exception as e:
-        print(f"Errore nell'aprire o leggere il file: {e}")
-        return 0
-
-
 
 
 
@@ -193,11 +164,7 @@ def main():
 
     write_ctwedge_parameters(output_file, phenotypes, num_phenotypes)
 
-    count_phenotype1_hpo_codes(output_file)
-
     write_ctwedge_constraints(output_file, hierarchy_path, num_phenotypes)
-
-    count_phenotype1_constraints(output_file)
 
 if __name__ == "__main__":
     main()

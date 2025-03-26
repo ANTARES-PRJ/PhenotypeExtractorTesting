@@ -123,8 +123,6 @@ def extract_reports_to_csv(codici_file, dataset_file, hierarchy_file, output_dir
                 output_data_all_codes.append([codici_riga_str] + ["not found in dataset"] * (len(df_dataset.columns)))
     
     pd.DataFrame(output_data_matches).to_csv(os.path.join(output_directory, "report_matches.csv"), index=False, encoding='utf-8')
-    pd.DataFrame(output_data_exact_matches).to_csv(os.path.join(output_directory, "report_exact_matches.csv"), index=False, encoding='utf-8')
-    pd.DataFrame(output_data_all_codes).to_csv(os.path.join(output_directory, "report_all_codes.csv"), index=False, encoding='utf-8')
 
 def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))

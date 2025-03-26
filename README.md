@@ -40,6 +40,10 @@ The functionalities of `save_and_prepare_database.py` exploits the file `names.p
 
 
 
+
+
+
+
 ### HPO Hierarchy
 - **`completehierarchy.py`**: Organizes the HPO hierarchy into a CSV file.
 - **`completehierarchy_from118.py`**: Organizes the HPO hierarchy with a maximum parent code of `HP:0000118` into a CSV file.
