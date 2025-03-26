@@ -62,7 +62,6 @@ After running this program, you will have a single dataset named `merged_dataset
 | Script name   | Inputs | Outputs   |
 |-----------|-----------|-----------|
 | **save_and_prepare_database.py** | | merged_dataset.csv | 
-| **dataset_customization.py** | merged_dataset.csv| ordered_dataset.csv  |
 | **completehierarchy.py** | hp.obo| completehpohierarchy.csv| 
 | **completehierarchy_from118.py** | hp.obo| completehpohierarchy_from118.csv|
 | **truedepthcalc.py** | completehpohierarchy.csv| true_depth.csv|

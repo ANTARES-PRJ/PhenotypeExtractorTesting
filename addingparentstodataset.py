@@ -9,7 +9,7 @@ output_dir = os.path.join(base_dir, "output")
 os.makedirs(output_dir, exist_ok=True)  # Crea la cartella se non esiste
 
 # Definisce i percorsi dei file di input e output dentro la cartella 'output'
-dataset_input = os.path.join(output_dir, "ordered_dataset.csv")
+dataset_input = os.path.join(output_dir, "merged_dataset.csv")
 ordered_hpo_complete = os.path.join(output_dir, "completehpohierarchy.csv")
 dataset_output = os.path.join(output_dir, "ordered_dataset_withparents.csv")
 
