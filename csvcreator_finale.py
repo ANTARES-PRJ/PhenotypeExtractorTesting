@@ -62,7 +62,6 @@ def extract_reports_to_csv(codici_file, dataset_file, output_directory):
 
     # Creazione DataFrame e salvataggio file
     pd.DataFrame(output_data_matches, columns=["Codici Input", "Codici Originali", "Codici Originali+Padri", "Report"]).to_csv(output_file_matches, index=False, encoding='utf-8')
-    pd.DataFrame(output_data_exact_matches, columns=["Codici Input", "Codici Originali", "Codici Originali+Padri", "Report"]).to_csv(output_file_exact_matches, index=False, encoding='utf-8')
 
     print(f"Estrazione completata! I file CSV sono stati salvati nella cartella: {output_directory}")
 
@@ -74,7 +73,6 @@ output_dir = os.path.join(script_dir, "output")
 os.makedirs(output_dir, exist_ok=True)  
 
 # Percorsi dei file di input
-#codici_file = os.path.join(output_dir, "formatted_codes.csv")
 codici_file = os.path.join(output_dir, "HPO-t2-formatted.csv")
 dataset_file = os.path.join(output_dir, "ordered_dataset_withparents.csv")
 

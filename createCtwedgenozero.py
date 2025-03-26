@@ -3,12 +3,31 @@ import re
 import os
 from itertools import combinations
 
+output_folder = "."
+
+
+
 def clean_hpo_code(hpo_code):
-    """ Rimuove il prefisso 'HP:' e gli zeri iniziali dai codici HPO, mantenendo tutti i valori tranne '0' singolo. """
-    if pd.isna(hpo_code):  # Controlla se il valore è NaN
+    """
+    Cleans and normalizes an HPO (Human Phenotype Ontology) code.
+    This function removes the 'HP:' prefix and leading zeros from the given HPO code.
+    If the input is NaN or results in a single zero after cleaning, it returns None.
+    Args:
+        hpo_code (str or any): The HPO code to clean. Can be a string or a value that 
+                               may be NaN (e.g., from a pandas DataFrame).
+    Returns:
+        str or None: The cleaned HPO code as a string, or None if the input is NaN 
+                     or results in a single zero after cleaning.
+    """
+    if pd.isna(hpo_code):  
         return None
-    cleaned_code = re.sub(r"^HP:0*", "", str(hpo_code))  # Rimuove 'HP:' e tutti gli 0 iniziali
-    return cleaned_code if cleaned_code != "0" else None  # Esclude solo lo zero singolo
+    cleaned_code = re.sub(r"^HP:0*", "", str(hpo_code))  # Removes 'HP:' and leading zeros
+    return cleaned_code if cleaned_code != "0" else None  
+
+
+
+
+
 
 def get_phenotypes_from_csv(depth, file_path):
     """ Legge i codici HPO dal file CSV fino alla profondità specificata. """
@@ -141,18 +160,27 @@ def count_phenotype1_constraints(ctwedge_file):
         print(f"Errore nell'aprire o leggere il file: {e}")
         return 0
 
+
+
+
+
+
 def main():
-    script_dir = os.path.dirname(os.path.abspath(__file__))  # Ottiene la directory dello script
-    output_dir = os.path.join(script_dir, "output")  
+    script_dir = os.path.dirname(os.path.abspath(__file__))  # Script directory
+    output_dir = os.path.join(script_dir, output_folder)  
     os.makedirs(output_dir, exist_ok=True)
+
     try:
-        depth = int(input("Inserisci numero di righe da considerare per la depth: "))
-        num_phenotypes = int(input("Inserisci il numero di fenotipi generare: "))
+        depth = int(input("Insert the desired depth: "))
+        num_phenotypes = int(input("Insert the desired number of phenotypes: "))
     except ValueError:
-        print("Errore: la depth e il numero di fenotipi devono essere numeri interi.")
+        print("Error: depth and number of phenotypes must be integers.")
         return
 
     
+
+
+
     csv_path = os.path.join(output_dir, "true_depth_from118_cleaned.csv")
     hierarchy_path = os.path.join(output_dir, "completehpohierarchy_from118_cleaned.csv")
     output_file = os.path.join(output_dir, "test.ctw")
