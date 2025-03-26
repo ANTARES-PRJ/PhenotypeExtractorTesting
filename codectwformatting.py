@@ -22,7 +22,7 @@ def remove_hp_0000000(df):
     df_cleaned = df_cleaned.dropna(how='all', axis=1)  # Rimuove colonne con solo NaN
     
     # Se una cella contiene 'HP:0000000', la considera come NaN
-    df_cleaned = df_cleaned.map(lambda x: None if x == "HP:0000000" else x)
+    df_cleaned = df_cleaned.applymap(lambda x: None if x == "HP:0000000" else x)
     df_cleaned = df_cleaned.dropna(how='all', axis=0)  # Rimuove righe con solo NaN dopo sostituzione
     df_cleaned = df_cleaned.dropna(how='all', axis=1)  # Rimuove colonne con solo NaN dopo sostituzione
 
@@ -53,8 +53,10 @@ output_dir = os.path.join(script_dir, "output")
 os.makedirs(output_dir, exist_ok=True)  # Crea la cartella output se non esiste
 
 # Percorsi dei file di input e output nella cartella 'output'
-input_file = os.path.join(output_dir, "codes.csv")
-output_file = os.path.join(output_dir, "formatted_codes.csv")
+# input_file = os.path.join(output_dir, "codes.csv")
+input_file = os.path.join(output_dir, "HPO-t2-cleaned.csv")
+#output_file = os.path.join(output_dir, "formatted_codes.csv")
+output_file = os.path.join(output_dir, "HPO-t2-formatted.csv")
 
 # Esecuzione della funzione
 save_formatted_codes(input_file, output_file)

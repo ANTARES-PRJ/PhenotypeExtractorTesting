@@ -77,7 +77,8 @@ output_dir = os.path.join(script_dir, "output")
 os.makedirs(output_dir, exist_ok=True)  
 
 # Percorsi dei file di input
-codici_file = os.path.join(output_dir, "formatted_codes.csv")
+#codici_file = os.path.join(output_dir, "formatted_codes.csv")
+codici_file = os.path.join(output_dir, "HPO-t2-formatted.csv")
 dataset_file = os.path.join(output_dir, "ordered_dataset_withparents.csv")
 
 # Esecuzione della funzione
