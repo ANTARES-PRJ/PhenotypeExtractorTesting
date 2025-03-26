@@ -37,40 +37,20 @@ https://hpo.jax.org/data/ontology
 ### Save and Translate
 Users who don't need to translate or merge datasets can skip this section.
 
-- **`savedatabase.py`**: Saves the dataset needed for further operations.*produce dataset1.csv dataset2.csv*
-- **`translate10x.py`**: Translates a specific dataset (translates 10 rows to English per cycle).
-- **`mergedataset.py`**: Merges two datasets and unifies them into a single dataset.
+- **`savedatabase.py`**: Saves the dataset needed for further operations. Then, it translates a specific dataset (translates 10 rows to English per cycle), and merges the two datasets into a single file.
 
-
-
-After running these 3 programs, you will have a single dataset named `starting_dataset`.
+After running this program, you will have a single dataset named `merged_dataset`.
 
 ### Dataset Customization
 If you already have the desired dataset, skip this section.
 
 - **`dataset_customization.py`**: Customizes the dataset and generates two results: one ordered and one unordered.
 
-### HPO Operations
-You must use a dataset with the following structure:
-
-| HPO_IDs   | Documento |
-|-----------|-----------|
-| Hpo1,hpo2 | med_report|
-
-The following operations are specific to datasets structured like this.
-
-- **`countstartinghpo.py`**: Counts how many times each HPO code appears in the dataset.
-- **`CountExtension.py`**: Displays the hierarchy of the codes.
-- **`CountTotalHpo.py`**: Counts each code, making the count value for itself and its parent codes.
-
 ### HPO Hierarchy
 - **`completehierarchy.py`**: Organizes the HPO hierarchy into a CSV file.
 - **`completehierarchy_from118.py`**: Organizes the HPO hierarchy with a maximum parent code of `HP:0000118` into a CSV file.
 - **`truedepthcalc.py`**: Organizes the hierarchy in a table with depth values (depth 0 represents the root, or code `HP:0000001`, while depth 15 is the maximum phenotype specification in HPO).
 - **`depthfrom118.py`**: Organizes the hierarchy into a table with depth values (depth 0 is the new root `HP:0000118`, depth 13 is now the maximum depth).
-
-### Graphics Creation & Data Representation
-- **`create_graphs.py`**: Excludes codes `HP:0000001` and `HP:0000118`, and represents all other HPO codes in multi-graphs stored in the `bar_charts` directory. This script will ask for the desired depth to create graphs (review may be needed).
 
 ### CTWEdge Input Creation
 - **`zeroremoval.py`**: Removes all zeros from the hierarchy and depth to generate reduced-length CTWEdge files.
@@ -105,7 +85,6 @@ The following operations are specific to datasets structured like this.
 | **completehierarchy_from118.py** | hp.obo| completehpohierarchy_from118.csv|
 | **truedepthcalc.py** | completehpohierarchy.csv| true_depth.csv|
 | **depthfrom118.py** | completehpohierarchy.csv| true_depth_from118.csv|
-| **create_graphs.py** | true_depth.csv <br>total_counts.csv <br>hp.obo| bar_charts|
 | **zeroremoval.py.py** | true_depth_from118.csv <br>completehpohierarchy_from118.csv | true_depth_from118_cleaned.csv <br>completehpohierarchy_from118_cleaned.csv|
 | **createctwedgenozero.py** | true_depth_from118_cleaned.csv completehpohierarchy_from118_cleaned.csv| test.ctw|
 | **CTWEDGE EXECUTION** | test.ctw | codes.csv|
