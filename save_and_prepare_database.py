@@ -2,15 +2,17 @@ import os
 from pathlib import Path
 import pandas as pd
 from deep_translator import GoogleTranslator
+from utils.ontology_depth import get_parents
 import random
 import re
 from utils.names import male_names_list, female_names_list, hospital_physicians, surname_list, escape_sentences
 
 res_dataset = "merged_dataset.csv"
+res_dataset_parent = "merged_dataset_with_parent.csv"
 dataset_1 = "synthetic_clinical_cases.csv"
 dataset_1_translated = "synthetic_clinical_cases_translated.csv"
 dataset_2 = "clinical_case_symptoms_diseases_dataset.csv"
-output_folder = "."
+output_folder = "output"
 
 def change_patient_name(text):
     """
@@ -392,6 +394,40 @@ def merge_datasets(folder, db1_file_name, db2_file_name, output_file_name):
     print("Final merged file saved successfully in output folder!")
 
 
+def add_parents_to_dataset(folder, input_dataset, output_dataset):
+    """
+    Adds a column of parent HPO (Human Phenotype Ontology) codes to a dataset.
+
+    This function reads a CSV file containing HPO codes, computes the parent 
+    HPO codes for each entry using the `get_parents` function, and inserts 
+    them as a new column in the dataset. The updated dataset is then saved 
+    to a new CSV file.
+
+    Args:
+        folder (str): The folder path where the input and output datasets are located.
+        input_dataset (str): The name of the input CSV file containing the dataset.
+        output_dataset (str): The name of the output CSV file to save the updated dataset.
+
+    Returns:
+        None
+
+    Side Effects:
+        - Reads the input dataset from the specified folder.
+        - Writes the updated dataset with the new column to the output file.
+        - Prints a confirmation message upon successful update.
+
+    Note:
+        The `get_parents` function must be defined elsewhere in the codebase. It is 
+        expected to take an HPO code as input and return its parent HPO codes.
+    """
+    dataset_input = os.path.join(folder, input_dataset)
+    dataset_output = os.path.join(folder, output_dataset)
+    df = pd.read_csv(dataset_input)
+
+    df.insert(1, 'Parent_HPO_Codes', df[df.columns[0]].astype(str).apply(get_parents))
+    df.to_csv(dataset_output, index=False)
+    print("Dataset File is Updated!")
+
 if __name__ == "__main__":
     # First, save the databases
     save_database(output_folder)
@@ -407,6 +443,9 @@ if __name__ == "__main__":
     os.remove(dataset_1_translated)
     os.remove(dataset_2)
     print("Files cleaned successfully")
+
+    # Create a new dataset with parent codes
+    add_parents_to_dataset(output_folder, res_dataset, res_dataset_parent)
 
 
 

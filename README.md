@@ -30,7 +30,7 @@ Users who don't need to translate or merge datasets can skip this section.
 
 - **`save_and_prepare_database.py`**: Saves the dataset needed for further operations. Then, it translates a specific dataset (translates 10 rows to English per cycle), and merges the two datasets into a single file. It also customizes the dataset by adding different names for patients, physicians, and hospitals.
 
-After running this program, you will have a single dataset named `merged_dataset.,csv`.
+After running this program, you will have a dataset named `merged_dataset.csv` and one named `merged_dataset_with_parents.csv` containing also parent codes.
 The functionalities of `save_and_prepare_database.py` exploits the file `names.py` which contains the names of patients, physicians, and hospitals.
 
 

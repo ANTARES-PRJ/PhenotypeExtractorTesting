@@ -74,7 +74,7 @@ os.makedirs(output_dir, exist_ok=True)
 
 # Percorsi dei file di input
 codici_file = os.path.join(output_dir, "HPO-t2-formatted.csv")
-dataset_file = os.path.join(output_dir, "ordered_dataset_withparents.csv")
+dataset_file = os.path.join(output_dir, "merged_dataset_with_parent.csv")
 
 # Esecuzione della funzione
 extract_reports_to_csv(codici_file, dataset_file, output_dir)
