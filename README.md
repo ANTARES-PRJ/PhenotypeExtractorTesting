@@ -35,12 +35,14 @@ pip install pronto
 ### Dataset Preparation
 This replication package already contains the resulting datasets. Thus, users who don't need to translate or merge datasets can skip this section.
 
-- **`save_and_prepare_database.py`**: Saves the dataset needed for further operations. Then, it translates a specific dataset (translates 10 rows to English per cycle), and merges the two datasets into a single file. It also customizes the dataset by adding different names for patients, physicians, and hospitals.
+- **`save_and_prepare_database.py`**: It saves the dataset needed for further operations. Then, it translates a specific dataset (translates 10 rows to English per cycle), and merges the two datasets into a single file. It also customizes the dataset by adding different names for patients, physicians, and hospitals.
 
 After running this program, you will have a dataset named `merged_dataset.csv` and one named `merged_dataset_with_parents.csv` containing also parent codes.
 The functionalities of `save_and_prepare_database.py` exploits the file `names.py` which contains the names of patients, physicians, and hospitals.
 
+### IPM Creation
 
+- **`generate_ipm.py`**: It generates the IPM, for a given depth and number of parameters. The IPM is saved in a file named `test.ctw`, in CTWedge format, and `hpo.acts` in the format compatible with CAgen.
 
 
 
@@ -56,10 +58,6 @@ The functionalities of `save_and_prepare_database.py` exploits the file `names.p
 - **`completehierarchy_from118.py`**: Organizes the HPO hierarchy with a maximum parent code of `HP:0000118` into a CSV file.
 - **`truedepthcalc.py`**: Organizes the hierarchy in a table with depth values (depth 0 represents the root, or code `HP:0000001`, while depth 15 is the maximum phenotype specification in HPO).
 - **`depthfrom118.py`**: Organizes the hierarchy into a table with depth values (depth 0 is the new root `HP:0000118`, depth 13 is now the maximum depth).
-
-### CTWEdge Input Creation
-- **`zeroremoval.py`**: Removes all zeros from the hierarchy and depth to generate reduced-length CTWEdge files.
-- **`createctwedgenozero.py`**: Creates CTWEdge input files without `HP:+` and all zeros, while preserving hierarchy constraints and handling `NULL` values.
 
 ### CTWEdge Execution
 - Execute CTWEdge on the generated input files and save the result as `code.csv`.
@@ -84,8 +82,6 @@ The functionalities of `save_and_prepare_database.py` exploits the file `names.p
 | **completehierarchy.py** | hp.obo| completehpohierarchy.csv| 
 | **completehierarchy_from118.py** | hp.obo| completehpohierarchy_from118.csv|
 | **depthfrom118.py** | completehpohierarchy.csv| true_depth_from118.csv|
-| **zeroremoval.py.py** | true_depth_from118.csv <br>completehpohierarchy_from118.csv | true_depth_from118_cleaned.csv <br>completehpohierarchy_from118_cleaned.csv|
-| **createctwedgenozero.py** | true_depth_from118_cleaned.csv completehpohierarchy_from118_cleaned.csv| test.ctw|
 | **CTWEDGE EXECUTION** | test.ctw | codes.csv|
 | **codectwformatting.py** |code.csv| formatted_code.csv|
 | **find_best_match.py** | formatted_codes.csv ordered_dataset_withparents.csv completehpohierarchy.csv| output_data_matches output_data_no_matches output_data_exact_matches|

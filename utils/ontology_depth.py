@@ -99,3 +99,27 @@ def get_parents(term_id, exclude_ids = root_ids):
     parent_codes = parent_codes.replace("[", "").replace(']', "").replace("'", "").replace(" ", "")
 
     return parent_codes
+
+
+def get_parent_map(exclude_ids = root_ids):
+    """
+    Generates a mapping of HPO (Human Phenotype Ontology) term IDs to their parent term IDs.
+    Args:
+        exclude_ids (list): A list of term IDs to exclude from the parent mapping. Defaults to `root_ids`.
+    Returns:
+        dict: A dictionary where the keys are HPO term IDs and the values are lists of parent term IDs,
+                excluding any IDs specified in `exclude_ids`.
+    Notes:
+        - Obsolete terms in the ontology are skipped.
+        - Parent term IDs are split by commas and filtered to exclude IDs in `exclude_ids`.
+    """
+    parent_map = {}
+    for term in ontology.terms():
+        if term.obsolete:
+            continue  # Skip obsolete terms
+
+        parent_map[term.id] = get_parents(term.id)
+        # Remove excluded IDs
+        parent_map[term.id] = [parent for parent in parent_map[term.id].split(',') if parent not in exclude_ids]
+
+    return parent_map
