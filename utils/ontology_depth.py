@@ -57,7 +57,6 @@ def get_hpo_depth():
         
         depth = calculate_depth(ontology, term.id, root_ids)
         if depth != float('inf'):
-            print(f"Term: {term.id}, Depth: {depth}") 
             if (depth in dict_depths):
                 dict_depths[depth].append(term.id)
             else:

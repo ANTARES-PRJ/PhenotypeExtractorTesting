@@ -2,8 +2,9 @@ import pandas as pd
 import re
 import os
 from itertools import combinations
+from utils.ontology_depth import get_hpo_depth
 
-output_folder = "."
+output_folder = "output"
 
 
 def clean_hpo_code(hpo_code):
@@ -24,27 +25,19 @@ def clean_hpo_code(hpo_code):
     return cleaned_code if cleaned_code != "0" else None  
 
 
-
-
-
-
-def get_phenotypes_from_csv(depth, file_path):
-    """ Legge i codici HPO dal file CSV fino alla profondità specificata. """
-    try:
-        df = pd.read_csv(file_path, header=0, dtype=str)  # Legge come stringa
-        if depth < 1 or depth > len(df):
-            raise ValueError(f"La depth deve essere compresa tra 1 e {len(df)}.")
-
-        combined_phenotypes = set()
-        for i in range(depth):
-            combined_phenotypes.update(df.iloc[i, 1:].dropna())
-
-        cleaned_phenotypes = [clean_hpo_code(p) for p in combined_phenotypes]
-        return sorted(filter(None, cleaned_phenotypes))  # Rimuove eventuali valori vuoti
-
-    except Exception as e:
-        print(f"Errore durante la lettura del file CSV: {e}")
+def get_phenotypes_from_ontology(depth):
+    depths = get_hpo_depth()
+    if depth not in depths:
+        print(f"Error: The depth {depth} is not available.")
         return []
+    
+    # Merge all HPO codes at a depth lower or equal than the specified one
+    combined_phenotypes = set()
+    for d in range(1, depth + 1):
+        combined_phenotypes.update(depths[d])
+
+    cleaned_phenotypes = [clean_hpo_code(p) for p in combined_phenotypes]
+    return sorted(filter(None, cleaned_phenotypes))  # Removes any empty values
 
 def parse_hierarchy_csv(hierarchy_path):
     """ Analizza il file CSV delle gerarchie per ottenere la mappa delle superclassi. """
@@ -157,7 +150,7 @@ def main():
     output_file = os.path.join(output_dir, "test.ctw")
 
 
-    phenotypes = get_phenotypes_from_csv(depth, csv_path)
+    phenotypes = get_phenotypes_from_ontology(depth)
     if not phenotypes:
         print("Errore: impossibile ottenere i fenotipi dal file CSV.")
         return

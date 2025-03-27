@@ -11,9 +11,15 @@ For the Majority of programs operating with csv:
 ```bash
 pip install pandas
 ```
+
 For translation:
 ```bash
 pip install deep_translator
+```
+
+For scripts operating on the HPO ontology:
+```bash
+pip install pronto
 ```
 
 `hp.obo` is also required. You can download it from the following link: [https://hpo.jax.org/data/ontology](https://hpo.jax.org/data/ontology)
@@ -23,10 +29,11 @@ pip install deep_translator
 ### Folder Structure
 
 - The folder contains Python scripts that process and analyze data.
-- The input and output CSV files are located in the `output` folder.
+- The CSV files are located in the `output` folder.
+- The `utils` folder contains utility python scripts.
 
 ### Dataset Preparation
-Users who don't need to translate or merge datasets can skip this section.
+This replication package already contains the resulting datasets. Thus, users who don't need to translate or merge datasets can skip this section.
 
 - **`save_and_prepare_database.py`**: Saves the dataset needed for further operations. Then, it translates a specific dataset (translates 10 rows to English per cycle), and merges the two datasets into a single file. It also customizes the dataset by adding different names for patients, physicians, and hospitals.
 
@@ -81,8 +88,6 @@ The functionalities of `save_and_prepare_database.py` exploits the file `names.p
 | **createctwedgenozero.py** | true_depth_from118_cleaned.csv completehpohierarchy_from118_cleaned.csv| test.ctw|
 | **CTWEDGE EXECUTION** | test.ctw | codes.csv|
 | **codectwformatting.py** |code.csv| formatted_code.csv|
-| **addingparentstodataset.py** | ordered_dataset.csv completehpohierarchy.csv| ordered_dataset_withparents.csv|
-| **csvcreator_finale.py** | formatted_codes.csv ordered_dataset_withparents.csv| output_data_matches output_data_no_matches output_data_exact_matches|
 | **find_best_match.py** | formatted_codes.csv ordered_dataset_withparents.csv completehpohierarchy.csv| output_data_matches output_data_no_matches output_data_exact_matches|
 
 

@@ -30,9 +30,5 @@ os.makedirs(output_dir, exist_ok=True)  # Crea la cartella output se non esiste
 ordered_hpo_input = os.path.join(output_dir, "completehpohierarchy_from118.csv")
 ordered_hpo_output = os.path.join(output_dir, "completehpohierarchy_from118_cleaned.csv")
 
-true_depth_input = os.path.join(output_dir, "true_depth_from118.csv")
-true_depth_output = os.path.join(output_dir, "true_depth_from118_cleaned.csv")
-
 # Esegui la pulizia per entrambi i file
 read_and_clean_csv(ordered_hpo_input, ordered_hpo_output)
-read_and_clean_csv(true_depth_input, true_depth_output)

@@ -130,7 +130,7 @@ def translate_constraint(ctwedge_constraint):
 if __name__ == "__main__":
     ctwedge_file = "test.ctw"  # Input file name
     acts_file = "hpo.acts"  # Output file name
-    output_folder = "."  # Output directory
+    output_folder = "output"  # Output directory
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
     output_dir = os.path.join(script_dir, output_folder)
