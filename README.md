@@ -44,7 +44,9 @@ The functionalities of `save_and_prepare_database.py` exploits the file `names.p
 
 - **`generate_ipm.py`**: It generates the IPM, for a given depth and number of parameters. The IPM is saved in a file named `test.ctw`, in CTWedge format, and `hpo.acts` in the format compatible with CAgen.
 
+### Combinatorial sampling
 
+- **`combinatorial_sampling.py`**: It generates the file `2wise_test_suite.csv` which contains the real test cases to be executed against the LLM.
 
 
 
@@ -54,10 +56,7 @@ The functionalities of `save_and_prepare_database.py` exploits the file `names.p
 
 
 ### HPO Hierarchy
-- **`completehierarchy.py`**: Organizes the HPO hierarchy into a CSV file.
 - **`completehierarchy_from118.py`**: Organizes the HPO hierarchy with a maximum parent code of `HP:0000118` into a CSV file.
-- **`truedepthcalc.py`**: Organizes the hierarchy in a table with depth values (depth 0 represents the root, or code `HP:0000001`, while depth 15 is the maximum phenotype specification in HPO).
-- **`depthfrom118.py`**: Organizes the hierarchy into a table with depth values (depth 0 is the new root `HP:0000118`, depth 13 is now the maximum depth).
 
 ### CTWEdge Execution
 - Execute CTWEdge on the generated input files and save the result as `code.csv`.
