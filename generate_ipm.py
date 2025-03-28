@@ -7,7 +7,7 @@ from utils.ctwedge_to_acts_translator import translate_from_ctwedge_to_acts
 
 output_folder = "output"
 file_name = "test.ctw"
-file_name_acts = "hpo_2.acts"
+file_name_acts = "hpo.acts"
 
 
 def clean_hpo_code(hpo_code):

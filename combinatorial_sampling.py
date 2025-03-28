@@ -1,12 +1,14 @@
 import pandas as pd
 import numpy as np
 import os
+import utils
 
 output_folder = "output"
-output_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), output_folder)
 test_suite_file = "HPO-t2.csv"
 test_suite_file_cleaned = "HPO-t2-cleaned.csv"
 test_suite_file_formatted = "HPO-t2-formatted.csv"
+dataset_file = "merged_dataset_with_parents.csv"
+test_suite_clinicalreports = "2wise_test_suite.csv"
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 def remove_duplicates(filename, test_suite_file, test_suite_file_cleaned):
@@ -114,8 +116,69 @@ def save_formatted_codes(input_file, output_file):
     df_codes.to_csv(output_file, index=False, header=False)
     print(f"Formatted test suite saved in: {output_file}")
 
+def export_test_suite(output_folder, output_file, dataset_file, test_suite_clinicalreports):
+    os.makedirs(output_folder, exist_ok=True)
+
+    # Read the combinatorial test suite at code-level, and the dataset
+    df_test_suite = pd.read_csv(output_file, header=None, dtype=str).fillna('')
+    df_dataset = pd.read_csv(dataset_file, dtype=str).fillna('')
+    df_res_testsuite = pd.DataFrame(columns=['TestCase', 'HPO_IDs', 'Parent_IDs', 'Document'])
+    # Add a nuew column to df_dataset with the name "UsageCount", initialized to 0 for all rows
+    df_dataset["UsageCount"] = 0
+
+    dataset_dict = {}
+    for _, row in df_dataset.iterrows():
+        codes_dataset = frozenset(row.iloc[0].split(','))
+        parent_dataset = frozenset(row.iloc[1].split(','))
+        final_dataset = codes_dataset.union(parent_dataset)
+        dataset_dict[final_dataset] = (codes_dataset, parent_dataset, row)
+
+    numrows = 0
+    for _, row in df_test_suite.iterrows():
+        testcase = str(row.dropna().values).replace("'", "").replace(" ", ",").replace(",,",",").replace(",]", "").replace("]", "").replace("[,", "").replace("[", "")
+        print("Processing row: ", testcase)
+        ts = row.dropna().astype(str).apply(lambda x: x.split(','))
+        ts = frozenset([code.strip() for sublist in ts for code in sublist if code.strip() != ''])
+
+        # First, look for an exact match
+        # Exctract from df_dataset all lines having the field HPO_IDs containing all elements of ts
+        df_dataset_matches = df_dataset[df_dataset["HPO_IDs"].apply(lambda x: all(code in x.split(',') for code in ts))]
+        if not df_dataset_matches.empty:
+            # Among all matches, extract the one having the lower UsageCount
+            min_usage_count = df_dataset_matches["UsageCount"].min()
+            df_dataset_matches = df_dataset_matches[df_dataset_matches["UsageCount"] == min_usage_count]
+            # Update the UsageCount of the selected row. I need to be sure to have only a single row (the head)
+            df_dataset_matches["UsageCount"] += 1
+            # Append the selected row to the test suite df_res_testsuite
+            newline = pd.DataFrame([{"TestCase": testcase, 
+                                         "HPO_IDs": df_dataset_matches.head(1)['HPO_IDs'].values[0], 
+                                         "Parent_IDs": df_dataset_matches.head(1)['Parent_HPO_Codes'].values[0], 
+                                         "Document": df_dataset_matches.head(1)['Document'].values[0].replace("\n", " ")}])
+            df_res_testsuite = pd.concat([df_res_testsuite, newline], ignore_index=True)
+            numrows += 1
+            
+        else:
+            df_dataset_matches = df_dataset[df_dataset["Parent_HPO_Codes"].apply(lambda x: all(code in x.split(',') for code in ts))]
+            if not df_dataset_matches.empty:
+                # Among all matches, extract the one having the lower UsageCount
+                min_usage_count = df_dataset_matches["UsageCount"].min()
+                df_dataset_matches = df_dataset_matches[df_dataset_matches["UsageCount"] == min_usage_count]
+                # Update the UsageCount of the selected row. I need to be sure to have only a single row (the head)
+                df_dataset_matches["UsageCount"] += 1
+                # Append the selected row to the test suite df_res_testsuite
+                newline = pd.DataFrame([{"TestCase": testcase, 
+                                         "HPO_IDs": df_dataset_matches.head(1)['HPO_IDs'].values[0], 
+                                         "Parent_IDs": df_dataset_matches.head(1)['Parent_HPO_Codes'].values[0], 
+                                         "Document": df_dataset_matches.head(1)['Document'].values[0].replace("\n", " ")}])
+                df_res_testsuite = pd.concat([df_res_testsuite, newline], ignore_index=True)
+                numrows += 1
+
+    # Export the test suite
+    df_res_testsuite.to_csv(test_suite_clinicalreports, index=False, header=True)
+    print(f"Test suite exported in: {test_suite_clinicalreports}")
+
 if __name__ == "__main__":
-    output_dir = os.path.join(script_dir, "output")
+    output_dir = os.path.join(script_dir, output_folder)
 
     input_file = os.path.join(output_dir, test_suite_file)
     output_file = os.path.join(output_dir, test_suite_file_cleaned)
@@ -128,3 +191,8 @@ if __name__ == "__main__":
     input_file = os.path.join(output_dir, test_suite_file_cleaned)
     output_file = os.path.join(output_dir, test_suite_file_formatted)
     save_formatted_codes(input_file, output_file)
+
+    # Now sample the test suite to generate test cases
+    dataset_file = os.path.join(output_dir, dataset_file)
+    test_suite_clinicalreports = os.path.join(output_dir, test_suite_clinicalreports)
+    export_test_suite(output_folder, output_file, dataset_file, test_suite_clinicalreports)
