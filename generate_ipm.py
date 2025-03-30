@@ -6,7 +6,7 @@ from utils.ontology_depth import get_hpo_depth, get_parent_map
 from utils.ctwedge_to_acts_translator import translate_from_ctwedge_to_acts
 
 output_folder = "output"
-file_name = "test.ctw"
+file_name = "hpo.ctw"
 file_name_acts = "hpo.acts"
 
 

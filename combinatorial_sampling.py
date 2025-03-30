@@ -31,6 +31,9 @@ def remove_duplicates(filename, test_suite_file, test_suite_file_cleaned):
     df = pd.read_csv(test_suite_file,dtype=str)
     df = df.astype(str)
 
+    # Set to "NULL" all fields in df containing "*"
+    df = df.replace("*", "NULL")    
+
     # Sort the values in each row while keeping the DataFrame structure and drop duplicates
     df_sorted = pd.DataFrame(np.sort(df.values, axis=1), columns=df.columns)
     df_unique = df_sorted.drop_duplicates()
