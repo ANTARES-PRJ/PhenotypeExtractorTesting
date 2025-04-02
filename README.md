@@ -49,7 +49,7 @@ The functionalities of `save_and_prepare_database.py` exploits the file `names.p
 - **`combinatorial_sampling.py`**: It generates the file `2wise_test_suite.csv` which contains the real test cases to be executed against the LLM.
 
 
-
+** Aggiornato fino a qua**
 
 
 
