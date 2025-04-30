@@ -1,5 +1,6 @@
 from pronto import Ontology
 from collections import defaultdict
+import ast
 
 ontology_path = "output/hp.obo"
 root_ids = ["HP:0000001", "HP:0000118"]
@@ -27,14 +28,23 @@ def calculate_depth(ontology, term_id, exclude_ids):
         - The `superclasses()` method of a term is expected to return a list of parent terms.
         - Each parent term is expected to have an `id` attribute and an `obsolete` attribute.
     """
-    parents = ontology[term_id].superclasses()
+    parents = ontology[term_id].superclasses(with_self=False, distance=1)
     # Remove from parents the terms in exclude_ids
     parents = [parent for parent in parents if parent.id not in exclude_ids]
     # Remove from parents all terms that are obsolete
     parents = [parent for parent in parents if not parent.obsolete]
+    # Remove from parents the term itself
+    parents = [parent for parent in parents if parent.id != term_id]
 
-    # The depth is the number of elements in parents
-    return len(parents)
+    # The depth is 1 plus the minimum depth of the parents
+    # If there are no valid parents, return 0
+    if not parents:
+        return 0
+    # Recursively calculate the depth of each parent
+    depths = [calculate_depth(ontology, parent.id, exclude_ids) for parent in parents]
+    depth = (min(depths) + 1) if depths else 0
+
+    return depth
 
 def get_hpo_depth():
     """
@@ -64,7 +74,7 @@ def get_hpo_depth():
 
     return dict_depths
 
-def get_parents(term_id, exclude_ids = root_ids):
+def get_parents(term_id, exclude_ids = root_ids, parse = True):
     """
     Retrieve the parent terms of a given ontology term, excluding specified terms and obsolete terms.
 
@@ -75,7 +85,11 @@ def get_parents(term_id, exclude_ids = root_ids):
     Returns:
         list: A list of parent terms, excluding those in `exclude_ids` and those marked as obsolete.
     """
-    codes = term_id.split(',')  # Split HPO codes
+    term_id = term_id.replace(' ', ',').replace(',,',',')
+    if (parse):
+        codes =  ast.literal_eval(term_id)
+    else:
+        codes = term_id.split(',')
     parent_codes = list()
 
     if ("Error" in codes or "Mobile:" in codes):
@@ -118,7 +132,7 @@ def get_parent_map(exclude_ids = root_ids):
         if term.obsolete:
             continue  # Skip obsolete terms
 
-        parent_map[term.id] = get_parents(term.id)
+        parent_map[term.id] = get_parents(term.id, parse = False)
         # Remove excluded IDs
         parent_map[term.id] = [parent for parent in parent_map[term.id].split(',') if parent not in exclude_ids]
 

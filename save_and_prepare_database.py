@@ -5,6 +5,7 @@ from deep_translator import GoogleTranslator
 from utils.ontology_depth import get_parents
 import random
 import re
+import ast
 from utils.names import male_names_list, female_names_list, hospital_physicians, surname_list, escape_sentences
 
 res_dataset = "merged_dataset.csv"
@@ -318,7 +319,7 @@ def translate_database(folder, db_file_name, db_file_name_translated):
             # Translate each column if the value is a string
             translated_row = {}
             for column, value in row.items():
-                if isinstance(value, str):  # Translate only if it's a string
+                if isinstance(value, str) and column != "HPO_IDs":   # Translate only if it's a string
                     try:
                         translated_row[column] = translator.translate(value)
                     except Exception as e:
@@ -383,6 +384,7 @@ def merge_datasets(folder, db1_file_name, db2_file_name, output_file_name):
     df2['Document'] = df2['Clinical case']
 
     # Select only the 'HPO_IDs' and 'Document' columns from both DataFrames
+    df1 = df1.rename(columns={"Documento": "Document"})
     df1_selected = df1[['HPO_IDs', 'Document']]
     df2_selected = df2[['HPO_IDs', 'Document']]
 
@@ -392,6 +394,44 @@ def merge_datasets(folder, db1_file_name, db2_file_name, output_file_name):
     # Save the final merged file
     df_merged.to_csv(final_output_path, index=False)
     print("Final merged file saved successfully in output folder!")
+
+
+
+def fix_serialized_list_string(s):
+    """
+    Fixes a serialized list string by ensuring proper formatting and escaping.
+    Args:
+        s (str): The input string to be fixed.
+    Returns:
+        str: The fixed string with proper formatting.
+    """
+    try:
+        # Safely evaluate the string into a Python list
+        parsed = ast.literal_eval(s)
+    except (ValueError, SyntaxError):
+        return s  # Return as-is if parsing fails
+
+    # Handle case like: ["HP:0007335,HP:0003892,..."]
+    if isinstance(parsed, list) and len(parsed) == 1 and isinstance(parsed[0], str) and ',' in parsed[0]:
+        elements = parsed[0].split(',')
+    elif isinstance(parsed, list):
+        elements = parsed
+    else:
+        return s
+
+    # Add single quotes around each element and join with commas
+    return ",".join(f"'{el.strip()}'" for el in elements)
+
+
+def quote_subterms(s):
+    """"
+    Quotes each term in a comma-separated string.
+    Args:
+        s (str): The input string containing comma-separated terms.
+    Returns:
+        str: The string with each term quoted.
+    """
+    return ",".join(f"'{term.strip()}'" for term in s.split(","))
 
 
 def add_parents_to_dataset(folder, input_dataset, output_dataset):
@@ -425,11 +465,23 @@ def add_parents_to_dataset(folder, input_dataset, output_dataset):
     df = pd.read_csv(dataset_input)
 
     df.insert(1, 'Parent_HPO_Codes', df[df.columns[0]].astype(str).apply(get_parents))
+    # Remove all new lines in each column of df
+    df = df.replace(r'\n', ' ', regex=True)
+    # Remove all double spaces in each column of df
+    df = df.replace(r'\s+', ' ', regex=True)
+    
+    # Fix the HPO_IDs column
+    df['HPO_IDs'] = df['HPO_IDs'].str.replace("' '", "','")
+    df['HPO_IDs'] = df['HPO_IDs'].apply(fix_serialized_list_string)
+
+    # Fix the Parent_HPO_Codes column
+    df['Parent_HPO_Codes'] = df['Parent_HPO_Codes'].apply(quote_subterms)
+
     df.to_csv(dataset_output, index=False)
     print("Dataset File is Updated!")
 
 if __name__ == "__main__":
-    # First, save the databases
+    """ # First, save the databases
     save_database(output_folder)
     
     # Then, translate the database
@@ -439,10 +491,10 @@ if __name__ == "__main__":
     merge_datasets(output_folder, dataset_1_translated, dataset_2, res_dataset)
     
     # Remove files created during the process
-    os.remove(dataset_1)
-    os.remove(dataset_1_translated)
-    os.remove(dataset_2)
-    print("Files cleaned successfully")
+    os.remove(os.path.join(output_folder, dataset_1))
+    os.remove(os.path.join(output_folder, dataset_1_translated))
+    os.remove(os.path.join(output_folder, dataset_2))
+    print("Files cleaned successfully") """
 
     # Create a new dataset with parent codes
     add_parents_to_dataset(output_folder, res_dataset, res_dataset_parent)
