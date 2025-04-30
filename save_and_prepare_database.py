@@ -9,7 +9,7 @@ import ast
 from utils.names import male_names_list, female_names_list, hospital_physicians, surname_list, escape_sentences
 
 res_dataset = "merged_dataset.csv"
-res_dataset_parent = "merged_dataset_with_parent.csv"
+res_dataset_parent = "merged_dataset_with_parents.csv"
 dataset_1 = "synthetic_clinical_cases.csv"
 dataset_1_translated = "synthetic_clinical_cases_translated.csv"
 dataset_2 = "clinical_case_symptoms_diseases_dataset.csv"
@@ -481,7 +481,7 @@ def add_parents_to_dataset(folder, input_dataset, output_dataset):
     print("Dataset File is Updated!")
 
 if __name__ == "__main__":
-    """ # First, save the databases
+    # First, save the databases
     save_database(output_folder)
     
     # Then, translate the database
@@ -494,7 +494,7 @@ if __name__ == "__main__":
     os.remove(os.path.join(output_folder, dataset_1))
     os.remove(os.path.join(output_folder, dataset_1_translated))
     os.remove(os.path.join(output_folder, dataset_2))
-    print("Files cleaned successfully") """
+    print("Files cleaned successfully")
 
     # Create a new dataset with parent codes
     add_parents_to_dataset(output_folder, res_dataset, res_dataset_parent)

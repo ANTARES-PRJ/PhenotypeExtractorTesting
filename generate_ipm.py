@@ -49,6 +49,7 @@ def get_phenotypes_from_ontology(depth):
     if depth not in depths:
         print(f"Error: The depth {depth} is not available.")
         return []
+    print(f"Depth {depth} found in the ontology.")
     
     # Merge all HPO codes at a depth lower or equal than the specified one
     combined_phenotypes = set()
@@ -174,6 +175,7 @@ if __name__ == "__main__":
     if not phenotypes:
         print("Error: could not retrieve phenotypes.")
         pass
+    print (f"Phenotypes retrieved: {len(phenotypes)}")
 
     write_ctwedge_parameters(output_file, phenotypes, num_phenotypes)
     write_ctwedge_constraints(output_file, num_phenotypes, depth)

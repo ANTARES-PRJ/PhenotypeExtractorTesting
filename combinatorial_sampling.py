@@ -83,11 +83,10 @@ def remove_hp_0000000(df):
     pandas.DataFrame: A cleaned DataFrame with rows and columns containing 
     only NaN values removed, and 'HP:0000000' treated as NaN.
     """
-    df_cleaned = df.dropna(how='all', axis=0).dropna(how='all', axis=1)  # Remove rows with only NaN on all axis
-    
-    # Cells with 'HP:0000000' are considered as NaN
-    df_cleaned = df_cleaned.applymap(lambda x: None if x == "HP:0000000" else x)
-    df_cleaned = df_cleaned.dropna(how='all', axis=0).dropna(how='all', axis=1)  # Remove rows with only NaN on all axis
+    df_cleaned = df.applymap(lambda x: np.nan if str(x).strip().upper() == "HP:0000000" or pd.isna(x) else x)
+
+     # Cells with 'HP:0000000' are considered as NaN
+    df_cleaned = df_cleaned.dropna(how='all', axis=0).dropna(how='all', axis=1)
 
     return df_cleaned
 
@@ -112,12 +111,32 @@ def save_formatted_codes(input_file, output_file):
     
     # Correctly format codes
     df_codes = df_codes.apply(lambda col: col.map(format_code))
-    df_codes = df_codes.apply(lambda row: row.dropna().reset_index(drop=True), axis=1)
     df_codes = remove_hp_0000000(df_codes)
     
-    # Save formatted file
-    df_codes.to_csv(output_file, index=False, header=False)
+    if df_codes is None or df_codes.empty:
+        print("No valid codes found after formatting and cleaning.")
+        pd.DataFrame().to_csv(output_file, index=False, header=False)
+    else:
+        # Save formatted file
+        df_codes = df_codes.dropna(how='all', axis=0)
+        df_codes.to_csv(output_file, index=False, header=False)
+
     print(f"Formatted test suite saved in: {output_file}")
+
+# Helper to normalize the HPO_IDs column values
+def parse_hpo_string(hpo_string):
+    """
+    Parses a string of HPO IDs and returns a set of cleaned HPO IDs.
+    Args:
+        hpo_string (str): The input string containing HPO IDs, separated by commas.
+    Returns:
+        set: A set of cleaned HPO IDs, with leading/trailing whitespace and quotes removed.
+    """
+    return set(
+        item.strip().strip("'\"") 
+        for item in hpo_string.split(",") 
+        if item.strip()
+    )
 
 def export_test_suite(output_folder, output_file, dataset_file, test_suite_clinicalreports):
     os.makedirs(output_folder, exist_ok=True)
@@ -136,16 +155,14 @@ def export_test_suite(output_folder, output_file, dataset_file, test_suite_clini
         final_dataset = codes_dataset.union(parent_dataset)
         dataset_dict[final_dataset] = (codes_dataset, parent_dataset, row)
 
-    numrows = 0
     for _, row in df_test_suite.iterrows():
         testcase = str(row.dropna().values).replace("'", "").replace(" ", ",").replace(",,",",").replace(",]", "").replace("]", "").replace("[,", "").replace("[", "")
-        print("Processing row: ", testcase)
         ts = row.dropna().astype(str).apply(lambda x: x.split(','))
         ts = frozenset([code.strip() for sublist in ts for code in sublist if code.strip() != ''])
 
         # First, look for an exact match
-        # Exctract from df_dataset all lines having the field HPO_IDs containing all elements of ts
-        df_dataset_matches = df_dataset[df_dataset["HPO_IDs"].apply(lambda x: all(code in x.split(',') for code in ts))]
+        # Exctract from df_dataset all lines having the field HPO_IDs containing all elements of ts, witout considering apex and the order
+        df_dataset_matches = df_dataset[df_dataset["HPO_IDs"].apply(lambda s: ts.issubset(parse_hpo_string(s)))]
         if not df_dataset_matches.empty:
             # Among all matches, extract the one having the lower UsageCount
             min_usage_count = df_dataset_matches["UsageCount"].min()
@@ -158,10 +175,9 @@ def export_test_suite(output_folder, output_file, dataset_file, test_suite_clini
                                          "Parent_IDs": df_dataset_matches.head(1)['Parent_HPO_Codes'].values[0], 
                                          "Document": df_dataset_matches.head(1)['Document'].values[0].replace("\n", " ")}])
             df_res_testsuite = pd.concat([df_res_testsuite, newline], ignore_index=True)
-            numrows += 1
             
         else:
-            df_dataset_matches = df_dataset[df_dataset["Parent_HPO_Codes"].apply(lambda x: all(code in x.split(',') for code in ts))]
+            df_dataset_matches = df_dataset[df_dataset["Parent_HPO_Codes"].apply(lambda s: ts.issubset(parse_hpo_string(s)))]
             if not df_dataset_matches.empty:
                 # Among all matches, extract the one having the lower UsageCount
                 min_usage_count = df_dataset_matches["UsageCount"].min()
@@ -174,7 +190,6 @@ def export_test_suite(output_folder, output_file, dataset_file, test_suite_clini
                                          "Parent_IDs": df_dataset_matches.head(1)['Parent_HPO_Codes'].values[0], 
                                          "Document": df_dataset_matches.head(1)['Document'].values[0].replace("\n", " ")}])
                 df_res_testsuite = pd.concat([df_res_testsuite, newline], ignore_index=True)
-                numrows += 1
 
     # Export the test suite
     df_res_testsuite.to_csv(test_suite_clinicalreports, index=False, header=True)
