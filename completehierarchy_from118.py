@@ -72,7 +72,7 @@ def save_to_csv(hpo_hierarchy, output_csv):
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Percorsi dei file nella cartella output
-obo_file = os.path.join(script_dir, "output", "hp.obo")  # File di input
+obo_file = os.path.join(script_dir, "utils", "hp.obo")  # File di input
 output_csv = os.path.join(script_dir, "output", "completehpohierarchy_from118.csv")  # File di output
 
 # Esegui il processo

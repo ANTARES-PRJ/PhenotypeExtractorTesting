@@ -7,6 +7,7 @@ def translate_from_ctwedge_to_acts(ctwedge_file, acts_file, output_dir):
     This function reads a CTWedge file, extracts parameters and constraints, 
     and converts them into the ACTS format. The resulting ACTS file is saved 
     in the specified output directory.
+    We use ACTS format as it is the one adopted by CAgen to generate combinatorial test cases.
     Args:
         ctwedge_file (str): The name of the input CTWedge file.
         acts_file (str): The name of the output ACTS file.

@@ -86,7 +86,7 @@ def save_to_csv(hpo_hierarchy, alt_ids, subclass_mapping, output_csv, include_al
     print(f"File CSV saved correctly at: {output_csv}")
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
-output_dir = os.path.join(script_dir, "output")
+output_dir = os.path.join(script_dir, "utils")
 os.makedirs(output_dir, exist_ok=True)
 
 obo_file = os.path.join(output_dir, "hp.obo")

@@ -2,7 +2,7 @@ from pronto import Ontology
 from collections import defaultdict
 import ast
 
-ontology_path = "output/hp.obo"
+ontology_path = "utils/hp.obo"
 root_ids = ["HP:0000001", "HP:0000118"]
 # Load the ontology
 ontology = Ontology(ontology_path)

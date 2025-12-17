@@ -14,6 +14,7 @@ dataset_1 = "synthetic_clinical_cases.csv"
 dataset_1_translated = "synthetic_clinical_cases_translated.csv"
 dataset_2 = "clinical_case_symptoms_diseases_dataset.csv"
 output_folder = "output"
+use_single_database = True
 
 def change_patient_name(text):
     """
@@ -239,22 +240,30 @@ def save_database(folder):
 
     # Input file paths
     input_file1 = "hf://datasets/biololab/synthetic_clinical_cases/data/train-00000-of-00001.parquet"
-    input_file2 = "hf://datasets/joseluhf11/clinical_case_symptoms_diseases_dataset/train.csv"
+    if not use_single_database:
+        input_file2 = "hf://datasets/joseluhf11/clinical_case_symptoms_diseases_dataset/train.csv"
 
     # Output file paths
     output_file1 = output_dir / "synthetic_clinical_cases.csv"
-    output_file2 = output_dir / "clinical_case_symptoms_diseases_dataset.csv"
+    if not use_single_database:
+        output_file2 = output_dir / "clinical_case_symptoms_diseases_dataset.csv"
 
     try:
         # Load data
         df1 = pd.read_parquet(input_file1)
-        df2 = pd.read_csv(input_file2)
+        df2 = None
+        if not use_single_database:
+            df2 = pd.read_csv(input_file2)
         
         # Save output files
         df1.to_csv(output_file1, index=False)
-        df2.to_csv(output_file2, index=False)
+        if not use_single_database:
+            df2.to_csv(output_file2, index=False)
         
-        print(f"Data saved successfully as {output_file1} and {output_file2}")
+        if not use_single_database:
+            print(f"Data saved successfully as {output_file1} and {output_file2}")
+        else:
+            print(f"Data saved successfully as {output_file1}")
     except Exception as e:
         print(f"Error: {e}")
 
@@ -386,11 +395,15 @@ def merge_datasets(folder, db1_file_name, db2_file_name, output_file_name):
     # Select only the 'HPO_IDs' and 'Document' columns from both DataFrames
     df1 = df1.rename(columns={"Documento": "Document"})
     df1_selected = df1[['HPO_IDs', 'Document']]
-    df2_selected = df2[['HPO_IDs', 'Document']]
+    if not use_single_database:
+        df2_selected = df2[['HPO_IDs', 'Document']]
 
     # Concatenate the two DataFrames
-    df_merged = pd.concat([df1_selected, df2_selected], ignore_index=True)
-
+    if not use_single_database:
+        df_merged = pd.concat([df1_selected, df2_selected], ignore_index=True)
+    else:
+        df_merged = df1_selected
+        
     # Save the final merged file
     df_merged.to_csv(final_output_path, index=False)
     print("Final merged file saved successfully in output folder!")

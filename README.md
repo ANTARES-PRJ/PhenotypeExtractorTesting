@@ -1,9 +1,10 @@
 
-# Combin-AADA
+# Evaluating an LLM-Based Phenotype Extractor from Medical Reports Using Combinatorial Testing
 
-Combin-AADA is a Python project designed to create a HPO (Human Phenotype Ontology) test model using Python, CTWEdge, and CAgen, starting from databases.
+This is the replication package for the paper "Evaluating an LLM-Based Phenotype Extractor from Medical Reports Using Combinatorial Testing".
+The LLM-based phenotype extractor is available at [https://doi.org/10.5281/zenodo.17912782](https://doi.org/10.5281/zenodo.17912782), including all configuration files, scripts, and instructions on how to set up and use the extractor.
 
-## Requirements
+## Requirements for this Replication Package
 
 Before running the scripts, install the following dependencies:
 
@@ -22,7 +23,8 @@ For scripts operating on the HPO ontology:
 pip install pronto
 ```
 
-`hp.obo` is also required. You can download it from the following link: [https://hpo.jax.org/data/ontology](https://hpo.jax.org/data/ontology)
+The HPO ontology, contained into the file `hp.obo`, is also required, and must be stored under the `utils` directory. 
+You can download it from the following link: [https://hpo.jax.org/data/ontology](https://hpo.jax.org/data/ontology)
 
 ## Usage
 
@@ -30,15 +32,15 @@ pip install pronto
 
 - The folder contains Python scripts that process and analyze data.
 - The CSV files are located in the `output` folder.
-- The `utils` folder contains utility python scripts.
+- The `utils` folder contains utility python scripts and utility files.
 
 ### Dataset Preparation
-This replication package already contains the resulting datasets. Thus, users who don't need to translate or merge datasets can skip this section.
+This replication package already contains the resulting datasets (`merged_dataset.csv` and `merged_dataset_with_parents.csv`). Thus, users who don't need to translate or merge datasets can skip this section.
 
 - **`save_and_prepare_database.py`**: It saves the dataset needed for further operations. Then, it translates a specific dataset (translates 10 rows to English per cycle), and merges the two datasets into a single file. It also customizes the dataset by adding different names for patients, physicians, and hospitals.
 
 After running this program, you will have a dataset named `merged_dataset.csv` and one named `merged_dataset_with_parents.csv` containing also parent codes.
-The functionalities of `save_and_prepare_database.py` exploits the file `names.py` which contains the names of patients, physicians, and hospitals.
+The functionalities of `save_and_prepare_database.py` exploits the file `utils/names.py` which contains the names of patients, physicians, and hospitals.
 
 ### IPM Creation
 
