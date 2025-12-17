@@ -62,7 +62,7 @@ The functionalities of `save_and_prepare_database.py` exploits the file `utils/n
 
 ### Test execution
 
-After the dataset (`2wise_test_suite.csv`) is ready and the LLM-based phenotype extractor is set up (see [https://doi.org/10.5281/zenodo.17912782](https://doi.org/10.5281/zenodo.17912782)), you can run the tests using the scripts in the `test_scripts` folder.
+After the dataset (`2wise_test_suite.csv`) is ready and the LLM-based phenotype extractor is set up (see [https://doi.org/10.5281/zenodo.17912782](https://doi.org/10.5281/zenodo.17912782)) and stored in the `test_scripts` folder, you can run the tests using the scripts in the `test_scripts` folder.
 
 In particular, the **combinatorial prompt testing** process is executed through the file `test_scripts/PhenotypeExtractorTesting.py`, while the exhaustive prompt testing is executed through the file `test_scripts/PhenotypeExtractorTestingExhaustive.py`.
 
