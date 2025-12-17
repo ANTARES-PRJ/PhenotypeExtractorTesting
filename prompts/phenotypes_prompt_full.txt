@@ -1,0 +1,31 @@
+Please carefully read the following medical report about a patient.
+Your task involves multiple steps to process and extract specific information related to the patient’s phenotypes as detailed below:
+ 
+1. Extract Patient Phenotypes: Identify and extract only the phenotypes described for the patient. Do not include information related to relatives or other individuals. Focus solely on the patient’s conditions and characteristics as mentioned in the report. Put more focus on lists and bullet points, if available.
+ 
+2. Map to HPO Terms: For each identified phenotype, find the corresponding Human Phenotype Ontology (HPO) term. If a direct match for an HPO term cannot be found, identify the closest related term. Clearly indicate if the term is a direct match or the closest approximation to the identified phenotype.
+ 
+3. Structured Output: Present your findings in JSON format: for each identified phenotype, you should provide:
+   - Original_phenotype_name: The name or description of the phenotype as identified by you in the patient’s medical report;
+   - HPO_phenotype_name: The matched or closest HPO term;
+ 
+Your output must only include the results in JSON format with the fields specified above, without any additional commentary or information.
+ 
+Hence, for instance, in a medical report such as the following
+"The patient shows epilectic behavior during the day, after having lunch. In the past, she registered a rise in blood pressure at the 37th gestational week. Her mother was reported to have facial edema"
+the output must be as follows:
+[
+{
+    "Original_phenotype_name" : "Seizure",
+    "HPO_phenotype_name": "Seizure"
+},
+{
+    "Original_phenotype_name" : "Rise in blood pressure at 37th gestational week",
+    "HPO_phenotype_name": "Hypertension"
+} 
+]
+
+No comment is allowed after the quotes, neither with parenthesis or double slashes.
+
+The text is:
+
